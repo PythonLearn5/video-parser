@@ -12,6 +12,7 @@ bp = Blueprint('parse', __name__)
 @bp.route('/parse', methods=['POST'])
 def parse():
     try:
+        logger.info(f'Parse Success1111')
         data = request.json
         text = data.get('text')
         wx_open_id = request.headers.get('WX-OPEN-ID', 'Guest')
@@ -33,7 +34,7 @@ def parse():
         if not redirect_url:
             redirect_url = extracted_url
             logger.info(f'Using original URL: {redirect_url}')
-
+        logger.info(f'Parse Success222')
         platform = DOMAIN_TO_NAME.get(UrlParser.get_domain(redirect_url))
         video_id = UrlParser.get_video_id(redirect_url)
         real_url = UrlParser.extract_video_address(redirect_url)
@@ -52,6 +53,7 @@ def parse():
         if platform == '小红书':
             max_attempts = 5
             attempts = 0
+            logger.info(f'Parse Success333')
             while attempts < max_attempts:
                 downloader = DownloaderFactory.create_downloader(platform, real_url)
                 title = downloader.get_title_content()

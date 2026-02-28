@@ -33,6 +33,14 @@ class WebFetcher:
                 else:
                     break
             else:
+                # 循环结束仍未找到目标，尝试使用 allow_redirects=True 作为备选方案
+                if 'douyin.com' in url:
+                    try:
+                        resp = requests.get(url, headers=WebFetcher.headers, allow_redirects=True, timeout=10)
+                        if resp.url != url and DOMAIN_TO_NAME.get(UrlParser.get_domain(resp.url)):
+                            return UrlParser.extract_video_address(resp.url)
+                    except Exception as e:
+                        logger.warning(f"Fallback redirect failed for {url}: {e}")
                 return None
             if redirect_url:
                 return UrlParser.extract_video_address(redirect_url)
@@ -87,6 +95,11 @@ class UrlParser:
             vid = query_params.get('vid', [None])[0]  # 使用 get 方法避免 KeyError
             if vid:
                 address = f"{address}?vid={vid}"
+        elif platform == "抖音":
+            query_params = parse_qs(parsed_url.query)
+            modal_id = query_params.get('modal_id', [None])[0]
+            if modal_id:
+                address = f"{address}?modal_id={modal_id}"
         elif platform == "微视":
             query_params = parse_qs(parsed_url.query)
             vid = query_params.get('id', [None])[0]  # 使用 get 方法避免 KeyError
@@ -119,6 +132,12 @@ class UrlParser:
             params_id = query_params.get('id', [None])[0]
             if params_id:
                 return params_id
+            
+            # 尝试从 modal_id 中获取视频ID (抖音)
+            params_modal_id = query_params.get('modal_id', [None])[0]
+            if params_modal_id:
+                return params_modal_id
+
             # 尝试从URL路径中获取视频ID
             path_segments = parsed_url.path.strip('/').split('/')
             if path_segments:
