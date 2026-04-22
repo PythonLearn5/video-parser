@@ -16,3 +16,18 @@ python api.py
 
 python app.py
 ```
+
+### docker本地安装
+
+docker login
+docker pull python:3.11-slim
+docker-compose up -d --build
+不用缓存
+docker compose build --no-cache
+docker compose up -d
+查看日志
+docker-compose logs -f
+
+停止服务
+docker-compose down
+

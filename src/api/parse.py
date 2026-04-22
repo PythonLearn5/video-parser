@@ -35,10 +35,14 @@ def parse():
             redirect_url = extracted_url
             logger.info(f'Using original URL: {redirect_url}')
         logger.info(f'Parse Success222')
-        platform = DOMAIN_TO_NAME.get(UrlParser.get_domain(redirect_url))
+        domain = UrlParser.get_domain(redirect_url)
+        platform = DOMAIN_TO_NAME.get(domain)
+        # 兜底识别：部分头条分享链路域名形态不稳定，直接按主域判断
+        if not platform and domain and ("toutiao.com" in domain or "ixigua.com" in domain):
+            platform = "今日头条"
         video_id = UrlParser.get_video_id(redirect_url)
         real_url = UrlParser.extract_video_address(redirect_url)
-        logger.info(f'platform: {platform}, video_id: {video_id}, real_url: {real_url}')
+        logger.info(f'domain: {domain}, platform: {platform}, video_id: {video_id}, real_url: {real_url}')
 
         if not platform:
             logger.error(f'This link is not supported for extraction: {real_url}')

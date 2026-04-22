@@ -59,7 +59,7 @@ Video Parser 是一个专业的 AI 驱动视频解析与内容提取系统，支
 |------|------|------|------|
 | 抖音 | ✅ | 小红书 | ✅ |
 | 哔哩哔哩 | ✅ | 快手 | ✅ |
-| 好看视频 | ✅ |  |  |
+| 好看视频 | ✅ | 今日头条 | ✅ |
 
 ---
 
@@ -390,6 +390,7 @@ X-EGCT-Text: 加密后的文本
 | 小红书 | `https://www.xiaohongshu.com/explore/68ab2dd1000000001c0045d0` |
 | 快手 | `https://www.kuaishou.com/short-video/3x8zha3ipq6bg8q` |
 | 好看视频 | `https://haokan.baidu.com/v?vid=13766973483433940333` |
+| 今日头条 | `https://www.toutiao.com/video/7520175956208143674/` |
 
 ---
 

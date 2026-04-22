@@ -79,8 +79,9 @@ class UrlParser:
     @staticmethod
     def get_domain(url):
         parsed_url = urlparse(url)
-        domain = parsed_url.netloc
-        return domain
+        # 使用 hostname 规避 ":443" 等端口导致的域名匹配失败
+        domain = parsed_url.hostname or parsed_url.netloc
+        return domain.lower() if domain else domain
 
     @staticmethod
     def extract_video_address(url):
@@ -132,6 +133,10 @@ class UrlParser:
             params_id = query_params.get('id', [None])[0]
             if params_id:
                 return params_id
+
+            params_group_id = query_params.get('group_id', [None])[0]
+            if params_group_id:
+                return params_group_id
             
             # 尝试从 modal_id 中获取视频ID (抖音)
             params_modal_id = query_params.get('modal_id', [None])[0]
@@ -158,7 +163,8 @@ class UrlParser:
             '哔哩哔哩': 'https://www.bilibili.com/video/',
             '抖音': 'https://www.iesdouyin.com/share/video/',
             '快手': 'https://www.kuaishou.com/short-video/',
-            '梨视频': 'https://www.pearvideo.com/'
+            '梨视频': 'https://www.pearvideo.com/',
+            '今日头条': 'https://www.toutiao.com/video/'
         }
         # 检查platform是否在映射表中
         if platform not in url_map:

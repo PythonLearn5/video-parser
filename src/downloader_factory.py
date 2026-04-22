@@ -6,6 +6,7 @@ from src.downloaders.haokan_downloader import HaokanDownloader
 from src.downloaders.weishi_downloader import WeishiDownloader
 from src.downloaders.lishipin_downloader import LishipinDownloader
 from src.downloaders.pipigaoxiao_downloader import PipigaoxiaoDownloader
+from src.downloaders.toutiao_downloader import ToutiaoDownloader
 
 
 class DownloaderFactory:
@@ -17,7 +18,8 @@ class DownloaderFactory:
         "好看视频": HaokanDownloader,
         "微视": WeishiDownloader,
         "梨视频": LishipinDownloader,
-        "皮皮搞笑": PipigaoxiaoDownloader
+        "皮皮搞笑": PipigaoxiaoDownloader,
+        "今日头条": ToutiaoDownloader
     }
 
     @staticmethod

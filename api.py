@@ -202,10 +202,14 @@ async def parse_video(
             redirect_url = extracted_url
             logger.info(f'Using original URL: {redirect_url}')
 
-        platform = DOMAIN_TO_NAME.get(UrlParser.get_domain(redirect_url))
+        domain = UrlParser.get_domain(redirect_url)
+        platform = DOMAIN_TO_NAME.get(domain)
+        # 兜底识别：部分头条分享链路域名形态不稳定，按主域判断
+        if not platform and domain and ("toutiao.com" in domain or "ixigua.com" in domain):
+            platform = "今日头条"
         video_id = UrlParser.get_video_id(redirect_url)
         real_url = UrlParser.extract_video_address(redirect_url)
-        logger.info(f'platform: {platform}, video_id: {video_id}, real_url: {real_url}')
+        logger.info(f'domain: {domain}, platform: {platform}, video_id: {video_id}, real_url: {real_url}')
 
         if not platform:
             logger.error(f'This link is not supported for extraction: {real_url}')
@@ -237,6 +241,12 @@ async def parse_video(
             title = downloader.get_title_content()
             video_url = downloader.get_real_video_url()
             cover_url = downloader.get_cover_photo_url()
+
+        if platform == "今日头条":
+            logger.info(
+                f"Toutiao parsed: title_len={len(title) if title else 0}, "
+                f"video_url_exists={bool(video_url)}, cover_url_exists={bool(cover_url)}"
+            )
 
         # 转换为 HTTPS
         updated_video_url = UrlParser.convert_to_https(video_url)
@@ -383,10 +393,12 @@ async def download_video(
 
 if __name__ == "__main__":
     import uvicorn
+    # 容器默认关闭热重载，避免 watchfiles 因日志写入触发重启打断请求
+    reload_enabled = os.getenv("UVICORN_RELOAD", "false").lower() == "true"
     uvicorn.run(
         "api:app",
         host="0.0.0.0",
         port=5001,
-        reload=True,
+        reload=reload_enabled,
         log_level="info"
     )
